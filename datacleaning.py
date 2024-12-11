@@ -71,6 +71,8 @@ def clean(dataset):
     # create labels
     cleaned["label"] = cleaned.apply(lambda x: choose_player(x["player1"], x["player2"], x["winner_name"]), axis=1)
 
+    # will pass each instance as a 3-tuple in the form: (player1, player2, instance)
+
     print(cleaned.head())
     return cleaned
 
