@@ -28,13 +28,21 @@ L_STATS = ["l_ace", "l_df", "l_1stIn", "l_1stWon", "l_2ndWon", "l_bpSaved"]
 
     # cleaned["l_bpSaved%"] = cleaned.apply(lambda x: x["l_bpSaved"] / x["l_bpFaced"], axis=1)
 
-def create_percentage(count, total):
-    if total != 0:
-        return count / total
-    else:
-        return None
+
 
 def clean(dataset):
+    def create_percentage(count, total):
+        if total != 0:
+            return count / total
+        else:
+            return None
+
+    def choose_player(player1, player2, winner):
+        if player1 == winner:
+            return "player1"
+        else:
+            return "player2"
+
     cleaned = dataset.copy()
 
     # get just attributes need for models
@@ -51,10 +59,6 @@ def clean(dataset):
         cleaned[w_count + "%"] = cleaned.apply(lambda x: create_percentage(x[w_count], x[w_total]), axis = 1)
         cleaned[l_count + "%"] = cleaned.apply(lambda y: create_percentage(y[l_count], y[l_total]), axis=1)
 
-
-    
-    
-
     # randomly assign winner and loser as Player 1 and Player 2
     rand = random.random()
     if rand < 0.5:
@@ -64,16 +68,16 @@ def clean(dataset):
         cleaned["player1"] = cleaned["loser_name"]
         cleaned["player2"] = cleaned["winner_name"]
 
-    
-
+    # create labels
+    cleaned["label"] = cleaned.apply(lambda x: choose_player(x["player1"], x["player2"], x["winner_name"]), axis=1)
 
     print(cleaned.head())
+    return cleaned
 
-
-    
-
-    
-
+# process
+#   encode surface
+#   encode best_of
+#   encode tourney_level
 
 
 def main():
@@ -83,7 +87,7 @@ def main():
 
     dataset = pd.read_csv("./raw-matchdata/atp_matches_2013.csv")
     # print(dataset.iloc[0])
-    clean(dataset)
+    cleaned = clean(dataset)
 
 
 if __name__ == "__main__":
