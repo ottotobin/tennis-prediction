@@ -147,9 +147,6 @@ def train_network(network, training_X, training_y, rate, verbose=False):
 
         # calculate the error on the training set
         train_loss = loss_function(train_predictions, train_y)
-                
-        # calculate error on the validation set
-        valid_loss = loss_function(valid_predictions, valid_y)
         
         # # calculate accuracy for validation sets
         valid_accuracy = calculate_accuracy(network, valid_X, valid_y)

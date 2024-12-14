@@ -1,6 +1,6 @@
 import pandas as pd
 import os
-from models import merge_data, split_data, convert_labels, create_network, create_validation, train_network
+from models import merge_data, split_data, convert_labels, create_network, train_network
 
 
 #----GLOBALS----
