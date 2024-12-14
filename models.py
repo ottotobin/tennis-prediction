@@ -64,23 +64,6 @@ def convert_labels(dataset):
     dataset_processed["label"] = pd.to_numeric(dataset_processed["label"])
     return dataset_processed
 
-# converts a training set into smaller train and validation sets
-def create_validation(training_X, training_y, valid_percentage):
-    # find the split point between training and validation
-    training_n = training_X.shape[0]
-    valid_rows = int(valid_percentage * training_n)
-
-    # create the validation set
-    valid_X = training_X.iloc[:valid_rows]
-    valid_y = training_y.iloc[:valid_rows]
-
-    # create the (smaller) training set
-    train_X = training_X.iloc[valid_rows:]
-    train_y = training_y.iloc[valid_rows:]
-
-    return train_X, train_y, valid_X, valid_y
-
-
 # creates a neural network with one hidden layer with a given number of attributes and labels
 def create_network(dataset, neurons):
     # calculate inputs
@@ -106,6 +89,22 @@ def create_network(dataset, neurons):
     network = torch.nn.Sequential(*all_layers)
 
     return network
+
+# converts a training set into smaller train and validation sets
+def create_validation(training_X, training_y, valid_percentage):
+    # find the split point between training and validation
+    training_n = training_X.shape[0]
+    valid_rows = int(valid_percentage * training_n)
+
+    # create the validation set
+    valid_X = training_X.iloc[:valid_rows]
+    valid_y = training_y.iloc[:valid_rows]
+
+    # create the (smaller) training set
+    train_X = training_X.iloc[valid_rows:]
+    train_y = training_y.iloc[valid_rows:]
+
+    return train_X, train_y, valid_X, valid_y
 
 # trains a neural network with given training data
 def train_network(network, training_X, training_y, rate, verbose=False):
