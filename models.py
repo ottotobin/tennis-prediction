@@ -128,11 +128,6 @@ def train_network(network, training_X, training_y, rate, verbose=False):
         valid_X = valid_X.to(device)
         valid_y = valid_y.to(device)      
         network = network.to(device)
-        
-    print(train_X.shape)
-    print(valid_X.shape)
-    print(train_y.shape)
-    print(valid_y.shape)
     
 
     # create the algorithm that learns the weight for the network (with a learning rate of 0.01)
@@ -210,7 +205,7 @@ def calculate_accuracy(model, X, y):
         softmax_probs = model(X)    
         predictions = torch.argmax(softmax_probs, dim=1)
 
-        # the calculate accuracy of those predictions
+        # calculate accuracy of those predictions
         accuracy = sum(predictions == y) / len(predictions)
     else:
         predictions = model.predict(X)
@@ -223,18 +218,17 @@ def main():
     df = merge_data()
     # dataset.to_csv("matches2010-20.csv")
     dataset = convert_labels(df)
-    print(dataset.shape)
 
     training_X, training_y, testing_X, testing_y  = split_data(dataset, TRAIN_PERCENT, SEED)
-    print(type(testing_X))
-    print(type(testing_y))
+    test_X = testing_X.to_numpy()
+    test_y = testing_y.to_numpy()
 
     # log_reg = train_log_regression(training_X, training_y)
 
     network = create_network(dataset, NEURONS)
     train_network(network, training_X, training_y, RATE)
 
-    print("neural network accuracy:", calculate_accuracy(network, testing_X, testing_y))
+    print("neural network accuracy:", calculate_accuracy(network, test_X, test_y))
 
 
 if __name__ == "__main__":
