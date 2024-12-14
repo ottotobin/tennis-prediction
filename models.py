@@ -136,12 +136,7 @@ def train_network(network, training_X, training_y, rate, verbose=False):
     # here we use cross entropy since we have a classification task with more than two possible labels
     loss_function = torch.nn.CrossEntropyLoss()
 
-    # # dataframe columns
-    # epochs = []
-    # train_loss_values = []
-    # valid_loss_values = []
-    # train_acc_values = []
-    # valid_acc_values = []
+    valid_acc_values = []
     
     # train for 1000 epochs
     num_epochs = 1000
@@ -152,38 +147,26 @@ def train_network(network, training_X, training_y, rate, verbose=False):
 
         # calculate the error on the training set
         train_loss = loss_function(train_predictions, train_y)
-        train_error = train_loss.item()
                 
         # calculate error on the validation set
         valid_loss = loss_function(valid_predictions, valid_y)
-        valid_error = valid_loss.item()
         
-        # # calculate accuracy for both training and validation sets
-        # train_accuracy = calculate_accuracy(network, train_X, train_y)
-        # valid_accuracy = calculate_accuracy(network, valid_X, valid_y)
+        # # calculate accuracy for validation sets
+        valid_accuracy = calculate_accuracy(network, valid_X, valid_y)
 
         # perform backpropagation
         optimizer.zero_grad()
         train_loss.backward()
         optimizer.step()
         
-        # saving error and accuracy to a dataframe
-    #     epochs.append(epoch)
-    #     train_loss_values.append(train_error)
-    #     valid_loss_values.append(valid_error)
-    #     train_acc_values.append(train_accuracy)
-    #     valid_acc_values.append(valid_accuracy)
+        valid_acc_values.append(valid_accuracy)
+
+        # stopping training early if reach a perfect validation accuracy
+        if valid_accuracy >= 1:
+            break
     
-    # # convert the training progress data to a Pandas DataFrame
-    # progress = {
-    #     "epoch": epochs,
-    #     "train_loss": train_loss_values,
-    #     "valid_loss": valid_loss_values,
-    #     "train_acc": train_acc_values,
-    #     "valid_acc": valid_acc_values
-    # }
-    
-    # return pd.DataFrame(progress)
+    return valid_acc_values[-1]
+
 
 #----PERFORMANCE----
 
@@ -191,8 +174,9 @@ def train_network(network, training_X, training_y, rate, verbose=False):
 def calculate_accuracy(model, X, y):
     if isinstance(model, torch.nn.modules.container.Sequential):
         # make predictions for the given X
-        X = torch.from_numpy(X.values).float()
-        y = torch.from_numpy(y.values).long()
+        if not isinstance(X, torch.Tensor) and not isinstance(y, torch.Tensor):
+            X = torch.from_numpy(X.values).float()
+            y = torch.from_numpy(y.values).long()
 
         if torch.cuda.is_available():
             device = torch.device('cuda')
