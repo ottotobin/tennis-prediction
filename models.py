@@ -136,12 +136,12 @@ def train_network(network, training_X, training_y, rate, verbose=False):
     # here we use cross entropy since we have a classification task with more than two possible labels
     loss_function = torch.nn.CrossEntropyLoss()
 
-    # dataframe columns
-    epochs = []
-    train_loss_values = []
-    valid_loss_values = []
-    train_acc_values = []
-    valid_acc_values = []
+    # # dataframe columns
+    # epochs = []
+    # train_loss_values = []
+    # valid_loss_values = []
+    # train_acc_values = []
+    # valid_acc_values = []
     
     # train for 1000 epochs
     num_epochs = 1000
@@ -158,9 +158,9 @@ def train_network(network, training_X, training_y, rate, verbose=False):
         valid_loss = loss_function(valid_predictions, valid_y)
         valid_error = valid_loss.item()
         
-        # calculate accuracy for both training and validation sets
-        train_accuracy = calculate_accuracy(network, train_X, train_y)
-        valid_accuracy = calculate_accuracy(network, valid_X, valid_y)
+        # # calculate accuracy for both training and validation sets
+        # train_accuracy = calculate_accuracy(network, train_X, train_y)
+        # valid_accuracy = calculate_accuracy(network, valid_X, valid_y)
 
         # perform backpropagation
         optimizer.zero_grad()
@@ -168,22 +168,22 @@ def train_network(network, training_X, training_y, rate, verbose=False):
         optimizer.step()
         
         # saving error and accuracy to a dataframe
-        epochs.append(epoch)
-        train_loss_values.append(train_error)
-        valid_loss_values.append(valid_error)
-        train_acc_values.append(train_accuracy)
-        valid_acc_values.append(valid_accuracy)
+    #     epochs.append(epoch)
+    #     train_loss_values.append(train_error)
+    #     valid_loss_values.append(valid_error)
+    #     train_acc_values.append(train_accuracy)
+    #     valid_acc_values.append(valid_accuracy)
     
-    # convert the training progress data to a Pandas DataFrame
-    progress = {
-        "epoch": epochs,
-        "train_loss": train_loss_values,
-        "valid_loss": valid_loss_values,
-        "train_acc": train_acc_values,
-        "valid_acc": valid_acc_values
-    }
+    # # convert the training progress data to a Pandas DataFrame
+    # progress = {
+    #     "epoch": epochs,
+    #     "train_loss": train_loss_values,
+    #     "valid_loss": valid_loss_values,
+    #     "train_acc": train_acc_values,
+    #     "valid_acc": valid_acc_values
+    # }
     
-    return pd.DataFrame(progress)
+    # return pd.DataFrame(progress)
 
 #----PERFORMANCE----
 
@@ -219,15 +219,13 @@ def main():
     dataset = convert_labels(df)
 
     training_X, training_y, testing_X, testing_y  = split_data(dataset, TRAIN_PERCENT, SEED)
-    test_X = testing_X.to_numpy()
-    test_y = testing_y.to_numpy()
 
     # log_reg = train_log_regression(training_X, training_y)
 
     network = create_network(dataset, NEURONS)
     train_network(network, training_X, training_y, RATE)
 
-    print("neural network accuracy:", calculate_accuracy(network, test_X, test_y))
+    print("neural network accuracy:", calculate_accuracy(network, testing_X, testing_y))
 
 
 if __name__ == "__main__":
