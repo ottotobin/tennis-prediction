@@ -99,7 +99,7 @@ def main():
 
         cleaned = clean(dataset)
         encoded = encode(cleaned)
-        processedfile = "./processed-matchdata/" + rawfile.strip("_")
+        processedfile = "./processed-matchdata/" + rawfile[rawfile.find("_")+1:]
         encoded.to_csv(processedfile)
 
 

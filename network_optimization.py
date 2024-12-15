@@ -34,6 +34,8 @@ def selection(training_X, training_y, testing_X, k=None):
     # keep only the selected attributes in the testing set
     new_testing_X = feature_selector.transform(testing_X)
 
+    
+
     # determine the attributes chosen by the algorithm:
     # chosen is a list of True/False values, one per original attribute, where True indicates the original attribute was selected
     scores = zip(feature_selector.scores_, feature_selector.feature_names_in_)
